@@ -1,0 +1,26 @@
+{
+  "name": "crawler-desktop",
+  "version": "1.0.0",
+  "description": "萬用爬蟲 Mac 桌面版",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --mac"
+  },
+  "build": {
+    "appId": "com.taichung.crawler-desktop",
+    "productName": "萬用爬蟲",
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": ["dmg", "zip"]
+    },
+    "extraResources": [
+      { "from": "../crawler", "to": "crawler", "filter": ["**/*.js", "**/*.json"] }
+    ]
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  }
+}

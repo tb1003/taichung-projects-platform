@@ -1,0 +1,105 @@
+{
+  "_meta": {
+    "lastModifiedAt": "2026-03-14T10:04:02.661Z",
+    "lastModifiedBy": "owner"
+  },
+  "navbar": {
+    "brandName": "永慶不動產",
+    "brandSub": "西屯未來店 | 陳協理",
+    "lineUrl": "https://lin.ee/OQ9zdLK"
+  },
+  "footer": {
+    "brandName": "永慶不動產 西屯未來店",
+    "brandSub": "五義地產",
+    "description": "台中建案導覽與比較平台，為您精心整理台中市各區建案資訊，提供專業的購屋諮詢服務。",
+    "phone": "陳學韜 0970-090-223",
+    "address": "台中市西屯區西屯路二段248號",
+    "lineUrl": "https://lin.ee/OQ9zdLK",
+    "disclaimer": "免責聲明：本網站所有建案資訊僅供參考，實際以建商公告及買賣契約為準。本站不保證資訊之正確性與即時性，購屋前請務必實地查訪並諮詢專業人士。",
+    "copyright": "永慶不動產西屯未來店 陳店長",
+    "brokerInfo": "不動產經紀人：馮乾志 103中市經字第1304號"
+  },
+  "about": {
+    "heroImage": "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/hero-opening_c6e5cdbc.jpeg",
+    "subtitle": "永慶不動產西屯未來店 | 五義地產 | 陳學韜",
+    "storeName": "永慶不動產 西屯未來店",
+    "storeSub": "五義地產",
+    "address": "台中市西屯區西屯路二段248號",
+    "phone": "陳學韜 0970-090-223",
+    "lineUrl": "https://lin.ee/OQ9zdLK",
+    "values": [
+      {
+        "title": "專業分析",
+        "desc": "深度了解每個建案的優勢與特色，提供客觀的市場分析與建議。"
+      },
+      {
+        "title": "以客為尊",
+        "desc": "傾聽您的需求，量身推薦最適合的建案，陪伴您完成人生重要決定。"
+      },
+      {
+        "title": "在地深耕",
+        "desc": "熟悉台中各區域發展脈動，掌握最新建案資訊與市場趨勢。"
+      }
+    ],
+    "platformIntro": "本平台收錄台中市超過 900個建案的詳細資訊，涵蓋 14 期重劃區、13 期重劃區、水湳經貿園區、機捷特區、單元 12 等熱門區域。建案維度橫跨20多年，並提供五大優勢標語（地段價值、品牌建築、生活環境、生活機能、產品特色），並支援多建案橫向比較功能，幫助您快速找到理想的家園。",
+    "platformDisclaimer": "所有建案資訊陸續建置中僅供參考，實際以建商公告及買賣契約為準。",
+    "ctaText": "有任何購屋問題？歡迎隨時聯絡陳店長",
+    "teamMembers": [
+      {
+        "name": "陳學韜",
+        "title": "協理",
+        "order": 0,
+        "licenses": [],
+        "photos": [
+          "/team/Cp8jfLeK-1.jpeg",
+          "/team/1JYeFMdy41.jpeg",
+          "/team/AVcaioOLze.jpeg"
+        ],
+        "storeLinks": [
+          {
+            "name": "永慶房仲網",
+            "url": "https://shop.yungching.com.tw/0424522888/list"
+          }
+        ],
+        "education": {
+          "elementary": "東勢",
+          "juniorHigh": "東勢",
+          "highSchool": "台中二中",
+          "university": "嘉義大學",
+          "department": "應用微生物"
+        },
+        "eCardStyle": "8",
+        "phone": "0970090223",
+        "motto": "人勤地不懶，莊稼要靠管！",
+        "interests": "出遊，騎車，品酒，漫畫",
+        "religion": "無",
+        "travelNotes": "世界之大，希望有生之年可以走遍！"
+      }
+    ]
+  },
+  "home": {
+    "heroImage": "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/hero-opening_c6e5cdbc.jpeg",
+    "skylineImage": "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/taichung-skyline-SPdyK3fVWft4YezC6KsyLN.webp",
+    "consultationImage": "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/real-estate-consultation-7cGkbCY8HTENe5HpHUNiYg.webp",
+    "communityImage": "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/taichung-park-community-EGrfCxm52KjhU3K2vsb5kz.webp",
+    "lineUrl": "https://lin.ee/OQ9zdLK",
+    "heroBadge": "永慶不動產 西屯未來店",
+    "heroTitle": "台中建案",
+    "heroHighlight": "導覽與比較",
+    "heroSuffix": "平台",
+    "heroDesc": "精心整理台中市 {{count}} 個建案，涵蓋 14 期、13期、水湳、機捷等熱門重劃區。一站式瀏覽、比較，找到您的理想家園。",
+    "aboutSectionBadge": "關於我們",
+    "aboutSectionTitle": "您的台中購屋好夥伴",
+    "aboutSectionDesc": "陳學韜，永慶不動產西屯未來店的專業經理人。深耕台中房地產市場，熟悉各重劃區的發展脈動與建案特色。無論您是首購族、換屋族還是投資客，我都能為您提供最專業、最貼心的購屋建議。",
+    "ctaTitle": "找到您的理想家園",
+    "ctaDesc": "瀏覽 {{count}} 個台中建案，使用比較功能找出最適合您的選擇",
+    "featuredProjectNames": [
+      "勤美之森",
+      "寶輝花園紀",
+      "惠宇大聚",
+      "國泰聚",
+      "雙橡園S1",
+      "總太織築"
+    ]
+  }
+}

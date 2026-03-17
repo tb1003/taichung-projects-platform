@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-TW">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>台中建案導覽平台 | 陳學韜 永慶不動產西屯未來店</title>
+    <meta name="description" content="台中市 437 個建案深度分析與比較平台，由永慶不動產西屯未來店陳學韜為您精心整理。涵蓋 14 期、13 期、水湳、單元 12 等熱門重劃區。" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- 禁止拷貝複製 -->
+    <style>
+      body {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none; /* iOS 長按不顯示拷貝選單 */
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script>
+      // 禁止複製、剪下、右鍵選單（防止從選單複製）
+      document.addEventListener('copy', function (e) { e.preventDefault(); });
+      document.addEventListener('cut', function (e) { e.preventDefault(); });
+      document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- 若需 Umami 分析，請在 .env 設定 VITE_ANALYTICS_ENDPOINT 與 VITE_ANALYTICS_WEBSITE_ID 後再加回 script -->
+  </body>
+
+</html>

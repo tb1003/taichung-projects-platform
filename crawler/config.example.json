@@ -1,0 +1,44 @@
+{
+  "entryUrls": [
+    "https://example.com/list"
+  ],
+  "include": {
+    "urlPatterns": [
+      "https://example.com/item/.*"
+    ],
+    "contentRules": [
+      { "field": "title", "match": "關鍵字", "type": "includes" },
+      { "field": "price", "min": 100, "max": 10000 }
+    ]
+  },
+  "exclude": {
+    "urlPatterns": [
+      ".*/ad/.*",
+      ".*/login.*"
+    ],
+    "contentRules": [
+      { "field": "title", "match": "不要的詞", "type": "includes" }
+    ]
+  },
+  "output": {
+    "dir": "./crawler-output",
+    "filename": "crawl-result",
+    "format": "json"
+  },
+  "options": {
+    "maxPages": 100,
+    "delayMs": 1000,
+    "timeoutMs": 15000,
+    "maxConcurrent": 2,
+    "retries": 3,
+    "userAgent": "UniversalCrawler/1.0 (compatible; +https://github.com/...)"
+  },
+  "selectors": {
+    "listLink": "a.item-link",
+    "fields": {
+      "title": "h1",
+      "content": ".content",
+      "price": ".price"
+    }
+  }
+}

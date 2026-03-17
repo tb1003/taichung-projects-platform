@@ -1,0 +1,27 @@
+{
+  "agents": [
+    {
+      "id": "qQwrMeKjRDhv",
+      "email": "tb671003@gmail.com",
+      "passwordHash": "6e428bf43ef1fb1441d79e04a542c5f2:80d047857ca59e7d73da8aaa547a152da86fe1a18e50331e05acbfc2a5c0950cd8aeed639b327ad30765f6c3ffabc5a4ccb0a06770cc7702220a6f225212cadd",
+      "status": "approved",
+      "resume": {},
+      "eCardVisibleFields": [
+        "photoUrl",
+        "name",
+        "title",
+        "phone",
+        "lineId",
+        "email",
+        "regions",
+        "transactionCount",
+        "specialties",
+        "license",
+        "intro"
+      ],
+      "eCardStatus": "draft",
+      "createdAt": "2026-03-14T08:19:15.570Z",
+      "updatedAt": "2026-03-14T08:19:31.126Z"
+    }
+  ]
+}

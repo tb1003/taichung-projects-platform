@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>萬用爬蟲</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 16px;
+      background: #f5f5f5;
+    }
+    h1 { font-size: 1.25rem; margin: 0 0 8px 0; }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    label { display: block; font-size: 0.875rem; color: #555; margin-bottom: 4px; }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+    textarea { min-height: 60px; resize: vertical; font-family: inherit; }
+    .row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 12px; }
+    .row label { margin-bottom: 4px; }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+      background: #007aff;
+      color: #fff;
+    }
+    .btn:hover { background: #0066dd; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-outline { background: transparent; border: 1px solid #007aff; color: #007aff; }
+    .btn-outline:hover { background: #f0f7ff; }
+    #savePath { flex: 1; min-width: 200px; background: #f9f9f9; }
+    #log { white-space: pre-wrap; font-size: 0.8rem; color: #333; margin-top: 8px; }
+    .success { color: #22c55e; }
+    .error { color: #dc2626; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>萬用爬蟲（Mac 桌面版）</h1>
+    <p style="margin: 0; font-size: 0.875rem; color: #666;">設定起始網址與選擇器，選擇儲存位置後執行，結果會寫入該資料夾。</p>
+  </div>
+
+  <div class="card">
+    <label>起始網址（必填，每行一個）</label>
+    <textarea id="entryUrls" rows="3">https://example.com</textarea>
+
+    <label style="margin-top: 12px;">列表連結選擇器</label>
+    <input type="text" id="listLink" value="a[href]" placeholder="a.item-link" />
+
+    <label style="margin-top: 12px;">欄位選擇器（每行「欄位名: CSS 選擇器」）</label>
+    <textarea id="fields" rows="3">title: h1
+content: .content</textarea>
+
+    <div class="row" style="margin-top: 12px;">
+      <div>
+        <label>最多頁數</label>
+        <input type="number" id="maxPages" value="30" min="1" max="500" style="width: 80px;" />
+      </div>
+      <div>
+        <label>儲存格式</label>
+        <select id="format" style="width: 100px;">
+          <option value="json">JSON</option>
+          <option value="csv">CSV</option>
+          <option value="ndjson">NDJSON</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top: 12px;">
+      <label style="flex: 1; margin: 0;">
+        <span>儲存位置</span>
+        <input type="text" id="savePath" readonly placeholder="按右側按鈕選擇資料夾" />
+      </label>
+      <button type="button" class="btn btn-outline" id="btnChooseDir">選擇資料夾</button>
+    </div>
+
+    <div style="margin-top: 16px;">
+      <button type="button" class="btn" id="btnRun">開始爬取</button>
+    </div>
+    <div id="log"></div>
+  </div>
+
+  <script>
+    const entryUrls = document.getElementById("entryUrls");
+    const listLink = document.getElementById("listLink");
+    const fields = document.getElementById("fields");
+    const maxPages = document.getElementById("maxPages");
+    const format = document.getElementById("format");
+    const savePath = document.getElementById("savePath");
+    const btnChooseDir = document.getElementById("btnChooseDir");
+    const btnRun = document.getElementById("btnRun");
+    const log = document.getElementById("log");
+
+    function setLog(msg, isError = false) {
+      log.textContent = msg;
+      log.className = isError ? "error" : "success";
+    }
+
+    btnChooseDir.addEventListener("click", async () => {
+      const dir = await window.crawlerAPI.chooseSaveDir();
+      if (dir) savePath.value = dir;
+    });
+
+    function buildConfig() {
+      const fieldObj = {};
+      fields.value.split("\n").forEach((line) => {
+        const i = line.indexOf(":");
+        if (i > 0) {
+          const k = line.slice(0, i).trim();
+          const v = line.slice(i + 1).trim();
+          if (k && v) fieldObj[k] = v;
+        }
+      });
+      return {
+        entryUrls: entryUrls.value.split("\n").map((u) => u.trim()).filter(Boolean),
+        selectors: {
+          listLink: listLink.value.trim() || "a[href]",
+          fields: Object.keys(fieldObj).length ? fieldObj : undefined,
+        },
+        options: { maxPages: Math.min(500, Math.max(1, parseInt(maxPages.value, 10) || 30)), delayMs: 1000, timeoutMs: 15000 },
+      };
+    }
+
+    btnRun.addEventListener("click", async () => {
+      const config = buildConfig();
+      if (!config.entryUrls.length) {
+        setLog("請輸入至少一個起始網址。", true);
+        return;
+      }
+      const dir = savePath.value.trim();
+      if (!dir) {
+        setLog("請先選擇儲存位置。", true);
+        return;
+      }
+      btnRun.disabled = true;
+      setLog("爬取中…");
+      try {
+        const result = await window.crawlerAPI.runCrawler(config, dir, format.value);
+        setLog(`完成，共 ${result.count} 筆，已儲存至：\n${result.savedPath}`);
+      } catch (e) {
+        setLog("錯誤：" + (e.message || String(e)), true);
+      } finally {
+        btnRun.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
