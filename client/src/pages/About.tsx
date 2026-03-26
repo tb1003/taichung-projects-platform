@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 const DEFAULT_HERO = "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/hero-opening_c6e5cdbc.jpeg";
-const DEFAULT_LINE = "https://lin.ee/OQ9zdLK";
+const DEFAULT_LINE = "https://line.me/R/ti/p/@368bruzx";
 const DEFAULT_VALUES = [
   { icon: Star, title: "專業分析", desc: "深度了解每個建案的優勢與特色，提供客觀的市場分析與建議。" },
   { icon: Users, title: "以客為尊", desc: "傾聽您的需求，量身推薦最適合的建案，陪伴您完成人生重要決定。" },

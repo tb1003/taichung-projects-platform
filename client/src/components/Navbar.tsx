@@ -3,19 +3,13 @@
  * Navbar: 永慶黃色調頂部導航，含品牌標識與快速連結（內容可由後台網站設定）
  */
 import { Link, useLocation } from "wouter";
-import { Menu, X, GitCompareArrows, Phone, ChevronDown } from "lucide-react";
+import { Menu, X, GitCompareArrows, Phone } from "lucide-react";
 import { useState } from "react";
 import { useCompare } from "@/contexts/CompareContext";
 import { Button } from "@/components/ui/button";
 import { useSiteContent } from "@/hooks/useSiteContent";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
-const DEFAULT_LINE = "https://lin.ee/OQ9zdLK";
+const DEFAULT_LINE = "https://line.me/R/ti/p/@368bruzx";
 
 export default function Navbar() {
   const [location] = useLocation();
@@ -34,11 +28,6 @@ export default function Navbar() {
     { href: "/tools", label: "房產工具" },
     { href: "/tools/notes", label: "五義地產筆記" },
     { href: "/about", label: "關於我們" },
-  ];
-
-  const marketTrendsItems = [
-    { href: "/market-trends#focus", label: "房市焦點" },
-    { href: "/market-trends#regulations", label: "最新法規" },
   ];
 
   return (
@@ -76,31 +65,18 @@ export default function Navbar() {
               </span>
             </Link>
           ))}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <span
-                className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer inline-flex items-center gap-0.5 ${
-                  location.startsWith("/market-trends")
-                    ? "bg-primary/10 text-primary font-semibold"
-                    : "text-foreground/70 hover:text-foreground hover:bg-muted"
-                }`}
-                style={location.startsWith("/market-trends") ? { color: "#9a7b00" } : {}}
-              >
-                市場動態
-                <ChevronDown className="w-4 h-4" />
-              </span>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="min-w-[140px]">
-              <DropdownMenuItem asChild>
-                <Link href="/market-trends">市場動態總覽</Link>
-              </DropdownMenuItem>
-              {marketTrendsItems.map((item) => (
-                <DropdownMenuItem key={item.href} asChild>
-                  <Link href={item.href}>{item.label}</Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Link href="/market-trends">
+            <span
+              className={`px-3.5 py-2 rounded-lg text-sm font-medium transition-colors ${
+                location.startsWith("/market-trends")
+                  ? "bg-primary/10 text-primary font-semibold"
+                  : "text-foreground/70 hover:text-foreground hover:bg-muted"
+              }`}
+              style={location.startsWith("/market-trends") ? { color: "#9a7b00" } : {}}
+            >
+              市場動態
+            </span>
+          </Link>
           {navLinks.slice(4).map((link) => (
             <Link key={link.href} href={link.href}>
               <span
@@ -179,18 +155,6 @@ export default function Navbar() {
                 市場動態
               </span>
             </Link>
-            <div className="pl-6 flex flex-col gap-0.5">
-              <Link href="/market-trends#focus" onClick={() => setMobileOpen(false)}>
-                <span className="block px-2 py-1.5 rounded-lg text-xs text-muted-foreground hover:bg-muted">
-                  房市焦點
-                </span>
-              </Link>
-              <Link href="/market-trends#regulations" onClick={() => setMobileOpen(false)}>
-                <span className="block px-2 py-1.5 rounded-lg text-xs text-muted-foreground hover:bg-muted">
-                  最新法規
-                </span>
-              </Link>
-            </div>
             {navLinks.slice(4).map((link) => (
               <Link key={link.href} href={link.href}>
                 <span

@@ -16,7 +16,11 @@ type Article = {
   image?: string | null;
 };
 
-const staticArticles: Article[] = marketNewsData.articles as Article[];
+function sortByNewest(list: Article[]): Article[] {
+  return [...list].sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+}
+
+const staticArticles: Article[] = sortByNewest(marketNewsData.articles as Article[]);
 
 function formatDate(iso: string) {
   const [y, m, d] = iso.split("-");
@@ -29,7 +33,7 @@ export default function MarketTrends() {
   useEffect(() => {
     fetch("/api/public/market-news")
       .then((r) => r.ok ? r.json() : Promise.reject())
-      .then((d: { articles?: Article[] }) => d.articles && setArticles(d.articles))
+      .then((d: { articles?: Article[] }) => d.articles && setArticles(sortByNewest(d.articles)))
       .catch(() => {});
   }, []);
 

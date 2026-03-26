@@ -13,7 +13,7 @@ export default function Footer() {
   const description = f?.description ?? "台中建案導覽與比較平台，為您精心整理台中市各區建案資訊，提供專業的購屋諮詢服務。";
   const phone = f?.phone ?? "陳學韜 0970-090-223";
   const address = f?.address ?? "台中市西屯區西屯路二段248號";
-  const lineUrl = f?.lineUrl ?? "https://lin.ee/OQ9zdLK";
+  const lineUrl = f?.lineUrl ?? "https://line.me/R/ti/p/@368bruzx";
   const disclaimer = f?.disclaimer ?? "免責聲明：本網站所有建案資訊僅供參考，實際以建商公告及買賣契約為準。本站不保證資訊之正確性與即時性，購屋前請務必實地查訪並諮詢專業人士。";
   const copyright = f?.copyright ?? "永慶不動產西屯未來店 陳學韜";
   const brokerInfo = (f?.brokerInfo ?? "不動產經紀人：馮乾志 103中市經字第1304號").trim();

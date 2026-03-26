@@ -12,7 +12,7 @@ import ProjectCard from "@/components/ProjectCard";
 import { motion } from "framer-motion";
 
 const DEFAULT_HERO = "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/taichung-skyline-SPdyK3fVWft4YezC6KsyLN.webp";
-const DEFAULT_LINE = "https://lin.ee/OQ9zdLK";
+const DEFAULT_LINE = "https://line.me/R/ti/p/@368bruzx";
 const DEFAULT_FEATURED_NAMES = ["勤美之森", "寶輝花園紀", "惠宇大聚", "國泰聚", "雙橡園S1", "總太織築"];
 
 const CATEGORIES = [

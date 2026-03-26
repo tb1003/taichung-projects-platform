@@ -15,7 +15,7 @@ const DEFAULT_HERO = "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNL
 const DEFAULT_SKYLINE = "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/taichung-skyline-SPdyK3fVWft4YezC6KsyLN.webp";
 const DEFAULT_CONSULTATION = "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/real-estate-consultation-7cGkbCY8HTENe5HpHUNiYg.webp";
 const DEFAULT_COMMUNITY = "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/taichung-park-community-EGrfCxm52KjhU3K2vsb5kz.webp";
-const DEFAULT_LINE = "https://lin.ee/OQ9zdLK";
+const DEFAULT_LINE = "https://line.me/R/ti/p/@368bruzx";
 
 const HOT_ZONES = [
   { name: "機捷特區", count: 54, color: "from-blue-500 to-cyan-500" },

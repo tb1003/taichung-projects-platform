@@ -13,7 +13,7 @@ import { motion } from "framer-motion";
 const DEFAULT_HERO = "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/hero-opening_c6e5cdbc.jpeg";
 const DEFAULT_CONSULTATION = "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/real-estate-consultation-7cGkbCY8HTENe5HpHUNiYg.webp";
 const DEFAULT_COMMUNITY = "https://d2xsxph8kpxj0f.cloudfront.net/110775349/PbEBxmnwNLJoTarF4KRCn2/taichung-park-community-EGrfCxm52KjhU3K2vsb5kz.webp";
-const DEFAULT_LINE = "https://lin.ee/OQ9zdLK";
+const DEFAULT_LINE = "https://line.me/R/ti/p/@368bruzx";
 const DEFAULT_FEATURED_NAMES = ["勤美之森", "寶輝花園紀", "惠宇大聚", "國泰聚", "雙橡園S1", "總太織築"];
 
 const HOT_ZONES = [

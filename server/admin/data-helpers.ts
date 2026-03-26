@@ -8,7 +8,17 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "..", "..");
-const DATA_DIR = path.join(PROJECT_ROOT, "client", "src", "data");
+const DEFAULT_DATA_DIR = path.join(PROJECT_ROOT, "client", "src", "data");
+
+function resolveDataDir(): string {
+  const envDir = String(process.env.DATA_DIR || "").trim();
+  if (envDir) return envDir;
+  // 若有掛載 Volume（Railway 建議 mount /data），則優先使用
+  if (fs.existsSync("/data")) return "/data";
+  return DEFAULT_DATA_DIR;
+}
+
+const DATA_DIR = resolveDataDir();
 
 function dataPath(filename: string): string {
   return path.join(DATA_DIR, filename);

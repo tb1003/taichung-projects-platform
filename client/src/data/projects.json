@@ -1,6 +1,6 @@
 {
   "source": "大橘團隊 dajuteam.com.tw（各區合併）",
-  "updated": "2026-03-12T11:44:09.710Z",
+  "updated": "2026-03-21T09:24:30.763Z",
   "owner": {
     "name": "陳學韜",
     "phone": "0970090223",
@@ -17525,11 +17525,11 @@
           "visible": true
         },
         {
-          "id": "9BYEJhBQFH",
+          "id": "7xrtdjrPmu",
           "platform": "youtube",
-          "youtubeId": "7dwJDnk0KEk",
-          "url": "https://youtu.be/7dwJDnk0KEk",
-          "title": "社區中庭花園",
+          "youtubeId": "1iPniG9flYk",
+          "url": "https://youtube.com/shorts/1iPniG9flYk",
+          "title": "精銳FUN未來｜型男社區介紹｜永慶西屯未來店｜邱冠達-包婕妤",
           "visible": true
         },
         {
@@ -17538,6 +17538,14 @@
           "youtubeId": "yyQj3LJGIXI",
           "url": "https://youtu.be/yyQj3LJGIXI",
           "title": "精銳FUN未來社區外觀 空拍",
+          "visible": true
+        },
+        {
+          "id": "9BYEJhBQFH",
+          "platform": "youtube",
+          "youtubeId": "7dwJDnk0KEk",
+          "url": "https://youtu.be/7dwJDnk0KEk",
+          "title": "社區中庭花園",
           "visible": true
         }
       ],
@@ -21600,7 +21608,31 @@
       ],
       "elevator_ratio": 3,
       "elevator_grade": "佳",
-      "community_size": "超大型社區"
+      "community_size": "超大型社區",
+      "images": {
+        "exterior": [
+          "/project-images/296/exterior/S__62005257_0.jpg",
+          "/project-images/296/exterior/S__62005255_0.jpg",
+          "/project-images/296/exterior/S__62005256_0.jpg",
+          "/project-images/296/exterior/S__62005258_0.jpg",
+          "/project-images/296/exterior/S__62005259_0.jpg",
+          "/project-images/296/exterior/S__62005260_0.jpg"
+        ],
+        "amenity": [
+          "/project-images/296/amenity/IMG_5542.jpg",
+          "/project-images/296/amenity/IMG_5541.jpg",
+          "/project-images/296/amenity/IMG_5539.jpg",
+          "/project-images/296/amenity/IMG_5540.jpg",
+          "/project-images/296/amenity/IMG_5543.jpg"
+        ],
+        "layout": [
+          "/project-images/296/layout/S__62005252_0.jpg",
+          "/project-images/296/layout/S__62005253_0.jpg",
+          "/project-images/296/layout/S__62005254_0.jpg",
+          "/project-images/296/layout/IMG_5538.jpg"
+        ]
+      },
+      "videos": []
     },
     {
       "id": 297,
@@ -24407,7 +24439,17 @@
       "elevator_grade": "優",
       "community_size": "黃金比例",
       "使用分區": "第一之一種住宅區",
-      "主要用途": "住家用"
+      "主要用途": "住家用",
+      "videos": [
+        {
+          "id": "jK8t25oiFu",
+          "platform": "youtube",
+          "youtubeId": "VwoHH7LgZ6I",
+          "url": "https://youtu.be/VwoHH7LgZ6I?si=h4dr1KCukNDzPX7Z",
+          "title": "惠宇仁平- 官方廣告",
+          "visible": true
+        }
+      ]
     },
     {
       "id": 333,

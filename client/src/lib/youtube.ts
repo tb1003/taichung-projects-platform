@@ -35,21 +35,29 @@ export function getYouTubeThumbUrl(id: string): string {
   return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
 }
 
+/**
+ * 建案影片嵌入網址。
+ * 注意：勿使用已棄用的參數（例如 vq=hd1080），否則部分瀏覽器會出現 YouTube「錯誤 153／影片播放器設定錯誤」。
+ * loop 必須搭配 playlist=同一影片 id 才會循環。
+ * 建議傳入目前網站的 origin（例如 http://localhost:5173），可減少部分環境下的嵌入錯誤。
+ */
 export function getYouTubeEmbedUrl(
   id: string,
-  opts?: { autoplay?: boolean; mute?: boolean; loop?: boolean }
+  opts?: { autoplay?: boolean; mute?: boolean; loop?: boolean; origin?: string }
 ): string {
   const params = new URLSearchParams();
   params.set("rel", "0");
   params.set("playsinline", "1");
-  params.set("vq", "hd1080");
+  params.set("modestbranding", "1");
+  if (opts?.origin?.trim()) params.set("origin", opts.origin.trim());
   if (opts?.autoplay) params.set("autoplay", "1");
   if (opts?.mute) params.set("mute", "1");
   if (opts?.loop) {
     params.set("loop", "1");
     params.set("playlist", id);
   }
-  return `https://www.youtube-nocookie.com/embed/${id}?${params.toString()}`;
+  // 使用 www.youtube.com/embed；nocookie 與過時參數組合曾導致 Error 153
+  return `https://www.youtube.com/embed/${id}?${params.toString()}`;
 }
 
 /** 透過 noembed 取得 YouTube 影片標題（未填寫時可當預設標題） */

@@ -171,6 +171,27 @@ export async function apiDelete(path: string): Promise<void> {
   }
 }
 
+// ---------- 建案顯示（owner）----------
+export async function apiSetProjectPublished(projectId: number, isPublished: boolean): Promise<{ ok: true; id: number; isPublished: boolean }> {
+  return apiPut(`/api/admin/projects/${projectId}/publish`, { isPublished });
+}
+
+export async function apiBatchSetProjectPublished(ids: number[], isPublished: boolean): Promise<{ ok: true; updated: number; isPublished: boolean }> {
+  return apiPost(`/api/admin/projects/publish-batch`, { ids, isPublished });
+}
+
+export async function apiRestoreProject(projectId: number): Promise<{ ok: true; id: number }> {
+  return apiPut(`/api/admin/projects/${projectId}/restore`, {});
+}
+
+export async function apiHardDeleteProject(projectId: number): Promise<void> {
+  return apiDelete(`/api/admin/projects/${projectId}/hard`);
+}
+
+export async function apiEmptyTrash(): Promise<{ ok: true; removed: number }> {
+  return apiPost(`/api/admin/projects/trash/empty`, {});
+}
+
 // ---------- 建案圖片 ----------
 export interface ProjectImagesResponse {
   exterior?: string[];

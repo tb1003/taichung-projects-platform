@@ -472,6 +472,47 @@ router.get("/api/admin/projects", (_req: Request, res: Response) => {
   }
 });
 
+router.put("/api/admin/projects/:id/publish", ownerOnly, (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) return res.status(400).json({ error: "建案 id 格式錯誤" });
+    const { isPublished } = (req.body || {}) as { isPublished?: boolean };
+    if (typeof isPublished !== "boolean") return res.status(400).json({ error: "請提供 body: { isPublished: boolean }" });
+    const data = readProjects();
+    const idx = data.projects.findIndex((p: { id?: number }) => p.id === id);
+    if (idx === -1) return res.status(404).json({ error: "找不到建案" });
+    (data.projects as Record<string, unknown>[])[idx] = { ...data.projects[idx], isPublished, id };
+    writeProjects(data, getModifier(req));
+    logAudit(req, "update", "project", String(id), `publish=${isPublished ? "true" : "false"}`);
+    return res.json({ ok: true, id, isPublished });
+  } catch (e) {
+    return res.status(500).json({ error: "更新失敗", detail: String(e) });
+  }
+});
+
+router.post("/api/admin/projects/publish-batch", ownerOnly, (req: Request, res: Response) => {
+  try {
+    const { ids, isPublished } = (req.body || {}) as { ids?: number[]; isPublished?: boolean };
+    if (!Array.isArray(ids) || ids.length === 0) return res.status(400).json({ error: "請提供 body: { ids: number[] }（至少 1 筆）" });
+    if (typeof isPublished !== "boolean") return res.status(400).json({ error: "請提供 body: { isPublished: boolean }" });
+    const idSet = new Set(ids.map((x) => Number(x)).filter((x) => Number.isFinite(x)));
+    const data = readProjects();
+    let updated = 0;
+    (data.projects as Record<string, unknown>[]).forEach((p) => {
+      const pid = p.id as number | undefined;
+      if (pid != null && idSet.has(pid)) {
+        p.isPublished = isPublished;
+        updated++;
+      }
+    });
+    writeProjects(data, getModifier(req));
+    logAudit(req, "update", "project", "batch", `count=${updated}, publish=${isPublished ? "true" : "false"}`);
+    return res.json({ ok: true, updated, isPublished });
+  } catch (e) {
+    return res.status(500).json({ error: "更新失敗", detail: String(e) });
+  }
+});
+
 // 建案圖片相關路由必須在 /api/admin/projects/:id 之前（較具體路徑先匹配）
 router.get("/api/admin/projects/:id/images", (req: Request, res: Response) => {
   try {
@@ -590,6 +631,8 @@ router.post("/api/admin/projects", (req: Request, res: Response) => {
     }
     const maxId = projects.length ? Math.max(...projects.map((p) => p.id ?? 0)) : 0;
     const newProject = { ...body, id: maxId + 1 } as Record<string, unknown>;
+    if (typeof newProject.isPublished !== "boolean") newProject.isPublished = true;
+    if (typeof newProject.isDeleted !== "boolean") newProject.isDeleted = false;
     data.projects.push(newProject);
     writeProjects(data, getModifier(req));
     logAudit(req, "create", "project", String(newProject.id), (newProject.建案名稱 as string) || "");
@@ -597,6 +640,63 @@ router.post("/api/admin/projects", (req: Request, res: Response) => {
     res.status(201).json(newProject);
   } catch (e) {
     res.status(500).json({ error: "新增失敗", detail: String(e) });
+  }
+});
+
+router.put("/api/admin/projects/:id/restore", ownerOnly, (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) return res.status(400).json({ error: "建案 id 格式錯誤" });
+    const data = readProjects();
+    const idx = data.projects.findIndex((p: { id?: number }) => p.id === id);
+    if (idx === -1) return res.status(404).json({ error: "找不到建案" });
+    const prev = data.projects[idx] as Record<string, unknown>;
+    if (prev.isDeleted !== true) return res.status(400).json({ error: "此建案未在回收桶中" });
+    (data.projects as Record<string, unknown>[])[idx] = {
+      ...prev,
+      isDeleted: false,
+      deletedAt: undefined,
+      deletedBy: undefined,
+      id,
+    };
+    writeProjects(data, getModifier(req));
+    logAudit(req, "update", "project", String(id), "restore");
+    return res.json({ ok: true, id });
+  } catch (e) {
+    return res.status(500).json({ error: "還原失敗", detail: String(e) });
+  }
+});
+
+router.delete("/api/admin/projects/:id/hard", ownerOnly, (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) return res.status(400).json({ error: "建案 id 格式錯誤" });
+    const data = readProjects();
+    const idx = data.projects.findIndex((p: { id?: number }) => p.id === id);
+    if (idx === -1) return res.status(404).json({ error: "找不到建案" });
+    const p = data.projects[idx] as Record<string, unknown>;
+    if (p.isDeleted !== true) return res.status(400).json({ error: "僅能永久刪除回收桶內的建案" });
+    const name = String((p as { 建案名稱?: string })?.建案名稱 ?? "");
+    data.projects.splice(idx, 1);
+    writeProjects(data, getModifier(req));
+    logAudit(req, "delete", "project", String(id), `hard:${name}`);
+    return res.status(204).send();
+  } catch (e) {
+    return res.status(500).json({ error: "永久刪除失敗", detail: String(e) });
+  }
+});
+
+router.post("/api/admin/projects/trash/empty", ownerOnly, (req: Request, res: Response) => {
+  try {
+    const data = readProjects();
+    const before = data.projects.length;
+    data.projects = (data.projects as Record<string, unknown>[]).filter((p) => p.isDeleted !== true);
+    const removed = before - data.projects.length;
+    writeProjects(data, getModifier(req));
+    logAudit(req, "delete", "project", "trash", `empty:${removed}`);
+    return res.json({ ok: true, removed });
+  } catch (e) {
+    return res.status(500).json({ error: "清空回收桶失敗", detail: String(e) });
   }
 });
 
@@ -622,9 +722,16 @@ router.delete("/api/admin/projects/:id", (req: Request, res: Response) => {
     const idx = data.projects.findIndex((p: { id?: number }) => p.id === id);
     if (idx === -1) return res.status(404).json({ error: "找不到建案" });
     const name = (data.projects[idx] as { 建案名稱?: string })?.建案名稱;
-    data.projects.splice(idx, 1);
+    const prev = data.projects[idx] as Record<string, unknown>;
+    (data.projects as Record<string, unknown>[])[idx] = {
+      ...prev,
+      isDeleted: true,
+      deletedAt: new Date().toISOString(),
+      deletedBy: getModifier(req),
+      id,
+    };
     writeProjects(data, getModifier(req));
-    logAudit(req, "delete", "project", String(id), name);
+    logAudit(req, "delete", "project", String(id), `soft:${name || ""}`);
     res.status(204).send();
   } catch (e) {
     res.status(500).json({ error: "刪除失敗", detail: String(e) });

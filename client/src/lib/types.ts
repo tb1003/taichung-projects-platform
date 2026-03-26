@@ -58,6 +58,12 @@ export interface OwnerInfo {
 
 export interface Project {
   id: number;
+  /** 是否顯示在前台（預設 true；舊資料未填視為 true） */
+  isPublished?: boolean;
+  /** 是否已刪除（回收桶）。已刪除的建案前台不顯示，後台可在回收桶還原/永久刪除。 */
+  isDeleted?: boolean;
+  deletedAt?: string;
+  deletedBy?: string;
   建案名稱: string;
   建設公司: string;
   行政區: string;

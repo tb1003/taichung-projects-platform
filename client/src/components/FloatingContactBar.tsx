@@ -6,7 +6,7 @@
 import { MessageCircle, Phone, ArrowUp } from "lucide-react";
 import { useState } from "react";
 
-const LINE_URL = "https://lin.ee/OQ9zdLK";
+const LINE_URL = "https://line.me/R/ti/p/@368bruzx";
 const PHONE_NUMBER = "0970090223";
 
 export default function FloatingContactBar() {

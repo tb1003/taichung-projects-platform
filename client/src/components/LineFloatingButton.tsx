@@ -5,7 +5,7 @@
 import { MessageCircle } from "lucide-react";
 import { useCompare } from "@/contexts/CompareContext";
 
-const LINE_URL = "https://lin.ee/OQ9zdLK";
+const LINE_URL = "https://line.me/R/ti/p/@368bruzx";
 
 export default function LineFloatingButton() {
   const { items } = useCompare();

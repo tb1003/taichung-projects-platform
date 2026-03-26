@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import fs from "node:fs";
@@ -18,8 +19,28 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
+  // Railway / 反向代理環境：信任 proxy 才能取得真實 client IP（否則 rate limit 會把所有人當同一個 IP）
+  // 參考：Express trust proxy 設定
+  app.set("trust proxy", 1);
+
   // 安全標頭（防 XSS、clickjacking、MIME 嗅探等）；開發環境關閉 CSP 以配合 Vite
-  app.use(helmet({ contentSecurityPolicy: isProduction ? undefined : false }));
+  // 正式環境自訂 CSP：允許 YouTube iframe / iframe_api 與縮圖、noembed（後台抓標題用）
+  app.use(
+    helmet({
+      contentSecurityPolicy: isProduction
+        ? {
+            useDefaults: true,
+            directives: {
+              ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+              "img-src": ["'self'", "data:", "https:"],
+              "script-src": ["'self'", "https://www.youtube.com", "https://s.ytimg.com"],
+              "frame-src": ["'self'", "https://www.youtube.com", "https://www.youtube-nocookie.com"],
+              "connect-src": ["'self'", "https://noembed.com"],
+            },
+          }
+        : false,
+    })
+  );
 
   app.use(express.json());
 
@@ -50,7 +71,9 @@ async function startServer() {
       "/api",
       rateLimit({
         windowMs: fifteenMinutes,
-        max: 300,
+        // Railway 後方通常多使用者共用少數出口 IP；再加上後台頁面會打多個 API
+        // 先放寬上限，並搭配 trust proxy 取真實 client IP，避免誤判「請求過於頻繁」
+        max: 2000,
         message: { error: "請求過於頻繁，請稍後再試" },
         standardHeaders: true,
         legacyHeaders: false,
@@ -63,7 +86,7 @@ async function startServer() {
 
   if (isProduction) {
     const staticPath = path.resolve(__dirname, "public");
-    app.use("/project-images", express.static(path.join(getUploadRoot())));
+    app.use("/project-images", express.static(getUploadRoot()));
     app.use(express.static(staticPath));
     app.get("*", (_req, res) => {
       res.sendFile(path.join(staticPath, "index.html"));

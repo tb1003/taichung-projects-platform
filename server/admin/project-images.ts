@@ -12,9 +12,11 @@ const isProduction = process.env.NODE_ENV === "production";
 
 /** 上傳根目錄：開發時依模組路徑定位專案根目錄，正式環境寫入 dist/public */
 export function getUploadRoot(): string {
-  if (isProduction) {
-    return path.join(__dirname, "public", "project-images");
-  }
+  const env = String(process.env.UPLOAD_DIR || "").trim();
+  if (env) return env;
+  // Railway Volume：建議 mount /data，將上傳放在 /data/project-images
+  if (fs.existsSync("/data")) return path.join("/data", "project-images");
+  if (isProduction) return path.join(__dirname, "public", "project-images");
   const projectRoot = path.join(__dirname, "..", "..");
   return path.join(projectRoot, "client", "public", "project-images");
 }

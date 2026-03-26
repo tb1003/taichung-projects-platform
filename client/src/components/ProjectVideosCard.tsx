@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { PlayCircle, ExternalLink } from "lucide-react";
-import { extractYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbUrl } from "@/lib/youtube";
+import { extractYouTubeId, getYouTubeThumbUrl } from "@/lib/youtube";
+import { loadYouTubeIframeAPI } from "@/lib/youtube-iframe-api";
 import type { ProjectVideo } from "@/lib/types";
 
 type YoutubeVideo = ProjectVideo & { platform: "youtube" };
@@ -15,15 +16,115 @@ export default function ProjectVideosCard({ videos }: { videos: ProjectVideo[] }
   const initial = firstVisible(items);
   const [activeId, setActiveId] = useState<string | null>(initial?.id ?? null);
 
+  const itemsRef = useRef(items);
+  itemsRef.current = items;
+  const activeIdRef = useRef(activeId);
+  activeIdRef.current = activeId;
+
+  const playerId = useId().replace(/:/g, "");
+  const playerIdAttr = `yt-player-${playerId}`;
+  const playerRef = useRef<{
+    loadVideoById: (id: string) => void;
+    destroy: () => void;
+    seekTo: (seconds: number, allowSeekAhead?: boolean) => void;
+    playVideo: () => void;
+  } | null>(null);
+
   useEffect(() => {
     setActiveId(initial?.id ?? null);
   }, [initial?.id]);
 
   const active = items.find((v) => v.id === activeId) || initial;
   const activeYouTubeId = active ? (active.youtubeId || extractYouTubeId(active.url)) : null;
-  const iframeSrc = activeYouTubeId
-    ? getYouTubeEmbedUrl(activeYouTubeId, { autoplay: true, mute: true, loop: true })
-    : "";
+  const watchUrl =
+    active && activeYouTubeId
+      ? (String((active as YoutubeVideo).url || "").trim() || `https://www.youtube.com/watch?v=${activeYouTubeId}`)
+      : "";
+
+  const onEnded = useCallback(() => {
+    const list = itemsRef.current;
+    if (list.length === 0) return;
+    const p = playerRef.current;
+    if (list.length === 1) {
+      p?.seekTo(0, true);
+      p?.playVideo();
+      return;
+    }
+    const cur = activeIdRef.current;
+    const idx = Math.max(0, list.findIndex((v) => v.id === cur));
+    const next = list[(idx + 1) % list.length];
+    setActiveId(next.id);
+  }, []);
+
+  useEffect(() => {
+    if (!items.length) {
+      try {
+        playerRef.current?.destroy();
+      } catch {
+        /* ignore */
+      }
+      playerRef.current = null;
+      return;
+    }
+    if (!activeYouTubeId) return;
+
+    let cancelled = false;
+
+    const run = async () => {
+      await loadYouTubeIframeAPI();
+      if (cancelled) return;
+
+      const w = window as Window & {
+        YT: {
+          Player: new (
+            id: string,
+            opts: {
+              videoId: string;
+              playerVars: Record<string, string | number>;
+              events?: { onStateChange?: (e: { data: number }) => void };
+            }
+          ) => {
+            loadVideoById: (id: string) => void;
+            destroy: () => void;
+            seekTo: (seconds: number, allowSeekAhead?: boolean) => void;
+            playVideo: () => void;
+          };
+          PlayerState: { ENDED: number };
+        };
+      };
+
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+
+      playerRef.current = new w.YT.Player(playerIdAttr, {
+        videoId: activeYouTubeId,
+        playerVars: {
+          autoplay: 1,
+          mute: 1,
+          rel: 0,
+          playsinline: 1,
+          modestbranding: 1,
+          ...(origin ? { origin } : {}),
+        },
+        events: {
+          onStateChange: (e) => {
+            if (e.data === w.YT.PlayerState.ENDED) onEnded();
+          },
+        },
+      });
+    };
+
+    void run();
+
+    return () => {
+      cancelled = true;
+      try {
+        playerRef.current?.destroy();
+      } catch {
+        /* ignore */
+      }
+      playerRef.current = null;
+    };
+  }, [activeYouTubeId, items.length, playerIdAttr, onEnded]);
 
   if (!items.length) return null;
 
@@ -73,10 +174,10 @@ export default function ProjectVideosCard({ videos }: { videos: ProjectVideo[] }
           {active && (
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="text-sm font-semibold text-card-foreground truncate">{active.title}</p>
-              {(active as YoutubeVideo).url && (
+              {watchUrl && (
                 <a
                   className="text-xs text-primary hover:underline shrink-0 inline-flex items-center gap-1"
-                  href={(active as YoutubeVideo).url}
+                  href={watchUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -89,27 +190,15 @@ export default function ProjectVideosCard({ videos }: { videos: ProjectVideo[] }
 
           <div className="rounded-xl overflow-hidden border border-border bg-muted aspect-video">
             {activeYouTubeId ? (
-              <iframe
-                key={iframeSrc}
-                src={iframeSrc}
-                className="w-full h-full"
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowFullScreen
-                title={active?.title || "YouTube video"}
-              />
+              <div id={playerIdAttr} className="w-full h-full min-h-[200px]" />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-sm text-muted-foreground">
                 無法載入影片
               </div>
             )}
           </div>
-
-          <p className="text-[11px] text-muted-foreground">
-            影片將自動播放、靜音並循環播放。若未自動播放，請點擊播放器開始播放。
-          </p>
         </div>
       </div>
     </div>
   );
 }
-

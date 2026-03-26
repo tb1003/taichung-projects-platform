@@ -25,7 +25,7 @@ import ProjectVideosCard from "@/components/ProjectVideosCard";
 import type { ProjectVideo } from "@/lib/types";
 import { extractYouTubeId, getYouTubeThumbUrl } from "@/lib/youtube";
 
-const LINE_URL = "https://lin.ee/OQ9zdLK";
+const LINE_URL = "https://line.me/R/ti/p/@368bruzx";
 
 const sloganIcons: Record<string, typeof MapPin> = {
   地段價值: MapPin,
@@ -83,6 +83,30 @@ export default function ProjectDetail() {
               返回建案列表
             </Button>
           </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (project.isPublished === false) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <div className="max-w-xl w-full text-center bg-card border border-border rounded-2xl p-8">
+          <p className="text-xl font-bold text-foreground">資料整理中</p>
+          <p className="text-sm text-muted-foreground mt-2">歡迎來訊讓建案優先更新</p>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+            <a href={LINE_URL} target="_blank" rel="noopener noreferrer">
+              <Button className="rounded-full bg-[#06C755] hover:bg-[#06C755]/90 text-white">
+                Line 聯絡我們
+              </Button>
+            </a>
+            <Link href="/projects">
+              <Button variant="outline" className="rounded-full">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                返回建案列表
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     );

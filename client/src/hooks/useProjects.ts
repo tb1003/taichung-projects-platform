@@ -32,7 +32,11 @@ export function useProjects() {
   const [filters, setFilters] = useState<Filters>(defaultFilters);
   const [sortBy, setSortBy] = useState<string>("name");
 
-  const allProjects = useMemo(() => data.projects, []);
+  const allProjectsRaw = useMemo(() => data.projects, []);
+  const allProjects = useMemo(
+    () => allProjectsRaw.filter((p) => p.isDeleted !== true && p.isPublished !== false),
+    [allProjectsRaw]
+  );
 
   /** 依集團名稱取得旗下建設公司列表（搜尋「大城」時同時出現大城建設、大映建設等） */
   const builderNamesByParentGroup = useMemo(() => {
@@ -226,9 +230,13 @@ export function useProjects() {
 
   const getProjectById = useCallback(
     (id: number): Project | undefined => {
-      return allProjects.find((p) => p.id === id);
+      // 詳情頁需要能用舊連結進來：即使 isPublished=false 也要顯示「資料整理中」而不是 404
+      const p = allProjectsRaw.find((x) => x.id === id);
+      if (!p) return undefined;
+      if (p.isDeleted === true) return undefined;
+      return p;
     },
-    [allProjects]
+    [allProjectsRaw]
   );
 
   const hasActiveFilters = !!(
