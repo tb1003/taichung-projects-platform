@@ -1,6 +1,7 @@
 /**
  * 後台用：讀寫 client/src/data/*.json
  * 依模組路徑解析專案根目錄，不依賴 process.cwd()。
+ * Railway：若掛載 /data volume，會自動 seed 預設 JSON（僅首次）。
  */
 import fs from "node:fs";
 import path from "node:path";
