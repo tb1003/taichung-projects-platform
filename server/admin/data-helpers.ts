@@ -18,19 +18,47 @@ function resolveDataDir(): string {
   return DEFAULT_DATA_DIR;
 }
 
-const DATA_DIR = resolveDataDir();
+function ensureDir(dir: string): void {
+  try {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  } catch (e) {
+    // ignore (will fail later on read/write with clearer error)
+  }
+}
 
-function dataPath(filename: string): string {
-  return path.join(DATA_DIR, filename);
+function dataPath(filename: string, dir?: string): string {
+  return path.join(dir || resolveDataDir(), filename);
+}
+
+/** 第一次使用 Volume 時，把 repo 內預設資料 seed 到 Volume（只在檔案不存在時才複製） */
+function seedIfMissing(filename: string): void {
+  const dir = resolveDataDir();
+  if (dir === DEFAULT_DATA_DIR) return;
+
+  ensureDir(dir);
+  const target = dataPath(filename, dir);
+  if (fs.existsSync(target)) return;
+
+  const seed = dataPath(filename, DEFAULT_DATA_DIR);
+  if (!fs.existsSync(seed)) return;
+
+  try {
+    fs.copyFileSync(seed, target);
+  } catch {
+    // ignore
+  }
 }
 
 function readJson<T>(filename: string): T {
+  seedIfMissing(filename);
   const raw = fs.readFileSync(dataPath(filename), "utf-8");
   return JSON.parse(raw) as T;
 }
 
 function writeJson(filename: string, data: unknown): void {
-  const fullPath = dataPath(filename);
+  const dir = resolveDataDir();
+  ensureDir(dir);
+  const fullPath = dataPath(filename, dir);
   try {
     fs.writeFileSync(fullPath, JSON.stringify(data, null, 2), "utf-8");
   } catch (e) {
@@ -40,6 +68,7 @@ function writeJson(filename: string, data: unknown): void {
 }
 
 function exists(filename: string): boolean {
+  seedIfMissing(filename);
   return fs.existsSync(dataPath(filename));
 }
 
