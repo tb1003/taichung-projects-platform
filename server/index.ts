@@ -67,18 +67,6 @@ async function startServer() {
         legacyHeaders: false,
       })
     );
-    app.use(
-      "/api",
-      rateLimit({
-        windowMs: fifteenMinutes,
-        // Railway 後方通常多使用者共用少數出口 IP；再加上後台頁面會打多個 API
-        // 先放寬上限，並搭配 trust proxy 取真實 client IP，避免誤判「請求過於頻繁」
-        max: 2000,
-        message: { error: "請求過於頻繁，請稍後再試" },
-        standardHeaders: true,
-        legacyHeaders: false,
-      })
-    );
   }
 
   // API：建案／重劃區／建設公司／對應表／網站設定（含公開 GET /api/public/site-content）
