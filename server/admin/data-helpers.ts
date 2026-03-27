@@ -52,8 +52,32 @@ function seedIfMissing(filename: string): void {
 
 function readJson<T>(filename: string): T {
   seedIfMissing(filename);
-  const raw = fs.readFileSync(dataPath(filename), "utf-8");
-  return JSON.parse(raw) as T;
+  const primaryPath = dataPath(filename);
+  try {
+    const raw = fs.readFileSync(primaryPath, "utf-8");
+    return JSON.parse(raw) as T;
+  } catch (e) {
+    const err = e as NodeJS.ErrnoException;
+    // Railway 上若 /data 尚未可用（或建立失敗），回退讀取專案內建資料，避免整頁報錯。
+    if (err?.code !== "ENOENT") throw e;
+
+    const fallbackPath = dataPath(filename, DEFAULT_DATA_DIR);
+    const raw = fs.readFileSync(fallbackPath, "utf-8");
+    const parsed = JSON.parse(raw) as T;
+
+    // best effort: 再嘗試把 fallback 同步回目標資料夾，供後續寫入使用
+    try {
+      const dir = resolveDataDir();
+      ensureDir(dir);
+      const target = dataPath(filename, dir);
+      if (!fs.existsSync(target)) {
+        fs.copyFileSync(fallbackPath, target);
+      }
+    } catch {
+      // ignore fallback sync errors
+    }
+    return parsed;
+  }
 }
 
 function writeJson(filename: string, data: unknown): void {
